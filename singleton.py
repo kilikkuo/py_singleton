@@ -23,6 +23,12 @@ class Singleton(type):
                 return True
             return False
 
+    def can_shutdown(cls):
+        """
+        Derived class should ask this for cleanup its internal data.
+        """
+        return cls.__ref_count == 0
+
     def __del__(cls):
         assert cls.__ref_count == 0, "%s is not closed properly, un-paired creation & close"%(str(cls))
 

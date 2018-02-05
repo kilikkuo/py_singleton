@@ -29,6 +29,7 @@ class Singleton(type):
 class Child(metaclass=Singleton):
     def __init__(self):
         # Allocate internal resources
+        print(' Child.__init__ ')
         pass
 
     def __shutdown(self):
@@ -40,24 +41,27 @@ class Child(metaclass=Singleton):
             self.__shutdown()
 
 if __name__ == "__main__":
-    def create_child():
+    def create_child(i):
         import time
         import random
         c = Child()
+        # print('{}'.format(i))
         rand = random.random()
         time.sleep(rand)
         c.close()
-
+    # 第 1 次 'Child.__init__' 被印出來
     from concurrent.futures import ThreadPoolExecutor
     workers = 10000
     executor = ThreadPoolExecutor(max_workers=workers)
     for i in range(workers):
-        executor.submit(create_child)
+        executor.submit(create_child, i)
     executor.shutdown()
+    # 所有 worker 都執行結束
 
+    # 第 2 次 'Child.__init__' 被印出來
     c = Child()
     c_leaked = Child()
     c.close()
-    # NOTE : NOT calling close() for c_leaked to trigger exception here !
+    # NOTE : 如果不呼叫 c_leaked.close() 將會產生 exception !
     # c_leaked.close()
     pass

@@ -2,7 +2,7 @@ import threading
 class Singleton(type):
     __instance = None
     __ref_count = 0
-    __lock = threading.Lock()
+    __lock = threading.RLock()
     def __call__(cls, *args, **argd):
         with cls.__lock:
             if not cls.__instance:
